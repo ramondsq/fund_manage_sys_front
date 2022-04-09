@@ -136,6 +136,12 @@
           class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
           <h1 class="h2">项目经费信息管理</h1>
           <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="me-2" id="app4">
+              <select class="form-select" v-model="selected">
+                <option selected>所有类别</option>
+                <option v-for="(item,key) in data" :key="key">{{item.category_name}}</option>
+              </select>
+            </div>
             <!-- <div class="btn-group me-2">
               <button type="button" class="btn btn-sm btn-outline-secondary">分享</button>
               <button type="button" class="btn btn-sm btn-outline-secondary">导出</button>
@@ -382,7 +388,7 @@
     new Vue({
       el: "#app3",
       data: {
-        fund_username: user_name,
+        // fund_username: user_name,
         fund_amount: "",
         fund_date: "",
         fund_category: ""
@@ -419,7 +425,7 @@
     new Vue({
       el: "#myModal2",
       data: {
-        fund_username: user_name,
+        // fund_username: user_name,
         fund_amount: "",
         fund_date: "",
         fund_category: ""
@@ -453,6 +459,20 @@
       }
     })
 
+    $.get({
+      url: 'http://localhost:8080/fms/getCategories',
+      success: function (data) {
+        displayCates(data.categories)
+      }
+    })
+    function displayCates(cates) {
+      new Vue({
+        el:"#app4",
+        data:{
+          data:cates
+        }
+      })
+    }
 
   </script>
 </body>

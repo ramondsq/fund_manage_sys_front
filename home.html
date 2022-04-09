@@ -61,10 +61,10 @@
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="#">
                 <span data-feather="home"></span>
-                总览
+                主页
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="#">
                 <span data-feather="file"></span>
                 Orders
@@ -93,7 +93,7 @@
                 <span data-feather="layers"></span>
                 Integrations
               </a>
-            </li>
+            </li> -->
           </ul>
 
           <!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -102,7 +102,7 @@
               <span data-feather="plus-circle"></span>
             </a>
           </h6> -->
-          <ul class="nav flex-column mb-2">
+          <!-- <ul class="nav flex-column mb-2">
             <li class="nav-item">
               <a class="nav-link" href="#">
                 <span data-feather="file-text"></span>
@@ -127,7 +127,7 @@
                 Year-end sale
               </a>
             </li>
-          </ul>
+          </ul> -->
         </div>
       </nav>
 
@@ -136,6 +136,12 @@
           class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
           <h1 class="h2">项目经费信息</h1>
           <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="me-2" id="app4">
+              <select class="form-select" v-model="selected" @change="dispRecords">
+                <option selected>所有类别</option>
+                <option v-for="(item,key) in data" :key="key">{{item.category_name}}</option>
+              </select>
+            </div>
             <!-- <div class="btn-group me-2">
               <button type="button" class="btn btn-sm btn-outline-secondary">分享</button>
               <button type="button" class="btn btn-sm btn-outline-secondary">导出</button>
@@ -449,6 +455,45 @@
               alert("修改成功")
               window.location.reload()
             })
+          }
+        }
+      })
+
+      new Vue({
+        el: "#app4",
+        data: {
+          data: cates,
+          selected:""
+        },
+        methods: {
+          dispRecords: function () {
+            
+            console.log(this.selected)
+            if (this.selected == "所有类别") {
+              $.ajax({
+                url: 'http://localhost:8080/fms/getUserRecord',
+                type: "post",
+                data: {
+                  fund_username: user_name
+                },
+                success: function (data) {
+                  displayRecords(data.records)
+                }
+              })
+            } else {
+              $.ajax({
+                url: 'http://localhost:8080/fms/getUserRecordsByCate',
+                type: "post",
+                data: {
+                  fund_username: user_name,
+                  fund_category: this.selected
+                },
+                success: function (data) {
+                  displayRecords(data.records)
+                }
+              })
+            }
+            this.$forceUpdate()
           }
         }
       })
