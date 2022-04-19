@@ -64,13 +64,13 @@
                 主页
               </a>
             </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link" href="#">
+            <li class="nav-item">
+              <a class="nav-link" href="user_projs.html">
                 <span data-feather="file"></span>
-                Orders
+                我的项目
               </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link" href="#">
                 <span data-feather="shopping-cart"></span>
                 Products
@@ -153,12 +153,12 @@
             </button>
             <!-- 模态框 -->
             <div class="modal fade" id="modal1">
-              <div class="modal-dialog">
+              <div class="modal-dialog modal-xl">
                 <div class="modal-content">
 
                   <!-- 模态框头部 -->
                   <div class="modal-header">
-                    <h4 class="modal-title">经费使用记录</h4>
+                    <h4 class="modal-title">新增记录</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                   </div>
                   <form id="app3" @submit="submitRecord">
@@ -169,13 +169,27 @@
                         <div class="col">
                           <input type="text" class="form-control" placeholder="费用" v-model="fund_amount">
                         </div>
+
                         <div class="col">
                           <input type="datetime-local" class="form-control" placeholder="使用时间" v-model="fund_date">
                         </div>
+
                         <div class="col">
-                          <select class="form-select" v-model="selected">
-                            <option v-for="(item,key) in data" :key="key">
+                          <select class="form-select" v-model="selected_category">
+                            <option v-for="(item,key) in categories" :key="key" :value="item.category_id">
                               {{item.category_name}}
+                            </option>
+                          </select>
+                        </div>
+
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="经办人" v-model="fund_manager">
+                        </div>
+
+                        <div class="col">
+                          <select class="form-select" v-model="selected_project">
+                            <option v-for="(item,key) in projects" :key="key" :value="item.project_id">
+                              {{item.project_name}}
                             </option>
                           </select>
                         </div>
@@ -208,7 +222,7 @@
                 <th scope="col">经办人</th>
                 <th scope="col">审核</th>
                 <th scope="col">修改时间</th>
-                <th scope="col">项目编号</th>
+                <th scope="col">项目</th>
                 <th scope="col">操作</th>
                 <th scope="col"> </th>
               </tr>
@@ -216,13 +230,13 @@
             <tbody>
               <tr v-for="(item,key) in data" :key="key">
                 <td id="fund_id">{{item.fund_id}}</td>
-                <td>{{item.fund_amount}} 元</td>
-                <td>{{item.fund_date|timeFormat}}</td>
-                <td>{{item.fund_category_id|toCategoryName}}</td>
-                <td>{{item.fund_manager}}</td>
+                <td id="fund_amount">{{item.fund_amount}} 元</td>
+                <td id="fund_date">{{item.fund_date|timeFormat}}</td>
+                <td id="fund_category_id">{{item.fund_category_id|toCategoryName}}</td>
+                <td id="fund_manager">{{item.fund_manager}}</td>
                 <td>{{item.fund_audit|toChinese}}</td>
                 <td>{{item.fund_change_date|timeFormat}}</td>
-                <td>{{item.fund_proj_id}}</td>
+                <td id="fund_proj_id">{{item.fund_proj_id|toProjName}}</td>
                 <td>
                   <a href="" class="text-primary" data-bs-toggle="modal" data-bs-target="#modal2"
                     @click="changeRecord">修改</a>
@@ -237,7 +251,7 @@
         </div>
         <!-- 模态框 -->
         <div class="modal fade" id="modal2">
-          <div class="modal-dialog">
+          <div class="modal-dialog modal-xl">
             <div class="modal-content">
 
               <!-- 模态框头部 -->
@@ -252,13 +266,27 @@
                     <div class="col">
                       <input type="text" class="form-control" placeholder="费用" v-model="fund_amount">
                     </div>
+
                     <div class="col">
                       <input type="datetime-local" class="form-control" placeholder="使用时间" v-model="fund_date">
                     </div>
+
                     <div class="col">
-                      <select class="form-select" v-model="selected">
-                        <option v-for="(item,key) in data" :key="key">
+                      <select class="form-select" v-model="selected_category">
+                        <option v-for="(item,key) in categories" :key="key" :value="item.category_id">
                           {{item.category_name}}
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="col">
+                      <input type="text" class="form-control" placeholder="经办人" v-model="fund_manager">
+                    </div>
+
+                    <div class="col">
+                      <select class="form-select" v-model="selected_project">
+                        <option v-for="(item,key) in projects" :key="key" :value="item.project_id">
+                          {{item.project_name}}
                         </option>
                       </select>
                     </div>
@@ -292,6 +320,7 @@
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
 
+  <script src="js/public.js"></script>
   <script src="js/fms.js"></script>
   <script src="js/home.js"></script>
 </body>

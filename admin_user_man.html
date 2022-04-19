@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
-    <title>用户管理</title>
+    <title>用户管理——管理员</title>
 
     <link rel="canonical" href="">
 
@@ -65,12 +65,12 @@
                                 总览
                             </a>
                         </li>
-                        <!-- <li class="nav-item">
-                  <a class="nav-link" href="admin_user_man.html">
-                    <span data-feather="file"></span>
-                    用户管理
-                  </a>
-                </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin_proj.html">
+                                <span data-feather="file"></span>
+                                项目管理
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="admin_cate.html">
                                 <span data-feather="shopping-cart"></span>
@@ -263,139 +263,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="js/public.js"></script>
     <script src="js/fmsadmin.js"></script>
-
-    <script>
-        var changePwdUname;
-        var oldPwd;
-
-        var admin_name = Cookies.get('admin_name');
-        new Vue({
-            el: "#app1",
-            data: {
-                uname: admin_name
-            },
-            methods: {
-                signout: function () {
-                    Cookies.remove('admin_name');
-                    window.location.href = "index.html";
-                }
-            }
-        })
-
-        $.ajax({
-            url: 'http://localhost:8080/fms/getUsers',
-            type: "get",
-            success: function (data) {
-                displayRecords(data.users)
-            }
-        })
-        function auditRecord(id, status) {
-            $.ajax({
-                url: 'http://localhost:8080/fms/auditRecord',
-                type: "post",
-                data: {
-                    fund_audit: status,
-                    fund_id: Number.parseInt(id)
-                },
-                success: function (data) {
-                    if (data) {
-                        alert("审核成功");
-                        window.location.reload();
-                    } else {
-                        alert("审核失败");
-                    }
-                }
-            })
-        }
-        function displayRecords(records) {
-
-            new Vue({
-                el: "#app2",
-                data: {
-                    data: records
-                },
-                methods: {
-                    changePwd: function () {
-                        changePwdUname = $(event.target).parent().siblings("#cuname").text()
-                        oldPwd = $(event.target).parent().siblings("#oldpwd").text()
-                    },
-                    deleteUser: function () {
-                        var user_name = $(event.target).parent().siblings("#cuname").text()
-                        $.ajax({
-                            url: 'http://localhost:8080/fms/deleteUser',
-                            type: "post",
-                            data: {
-                                user_name: user_name
-                            },
-                            success: function (data) {
-                                if (data.code == 1) {
-                                    alert("删除成功");
-                                    window.location.reload();
-                                } else {
-                                    alert("删除失败");
-                                }
-                            }
-                        })
-                    },
-                }
-            }
-            )
-        }
-
-        new Vue({
-            el: "#app3",
-            data: {
-                user_name: "",
-                user_pwd: ""
-            },
-            methods: {
-                addUser: function (e) {
-                    e.preventDefault()
-                    $.ajax({
-                        url: 'http://localhost:8080/fms/addUser',
-                        type: "post",
-                        data: {
-                            user_name: this.user_name,
-                            user_pwd: this.user_pwd
-                        },
-                        success: function (data) {
-                            if (data.code == 1) {
-                                alert("添加成功");
-                                window.location.reload();
-                            } else {
-                                alert("添加失败");
-                            }
-                        }
-                    })
-                }
-            }
-        })
-
-        new Vue({
-            el: "#myModal2",
-            data: {
-                new_pwd: ""
-            },
-            methods: {
-                changeUserPwd: function (e) {
-                    e.preventDefault();
-                    var url = "http://localhost:8080/fms/changeUserPwd"
-                    $.post(url, {
-                        user_name: changePwdUname,
-                        old_pwd: oldPwd,
-                        new_pwd: this.new_pwd
-                    }, function (data) {
-                        alert("修改成功")
-                        window.location.reload()
-                    })
-                }
-            }
-        })
-
-
-    </script>
+    <script src="js/admin_user_man.js"></script>
 </body>
 
 </html>

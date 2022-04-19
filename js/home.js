@@ -1,23 +1,3 @@
-//获取user对应的project
-function getUserProjects(user_id) {
-    var projs;
-
-    $.ajax({
-        async: false,
-        url: 'http://localhost:8080/fms/getProjectsBy',
-        type: "get",
-        data: {
-            project_user_id: user_id
-        },
-        success: function (data) {
-            projs = data.projects
-        }
-    })
-    return projs;
-}
-
-var userProjects = getUserProjects(user_id);
-
 //通过user对应的projs获取record
 function getRecordsByProj(projects, category) {
     var allrecords = [];
@@ -41,24 +21,16 @@ function getRecordsByProj(projects, category) {
 
     return allrecords;
 }
+var userRecords = getRecordsByProj(userProjects);
 
-//获取所有的资金类别categories
-function getCategories() {
-    var categories;
 
-    $.ajax({
-        async: false,
-        url: 'http://localhost:8080/fms/getCategoriesBy',
-        type: 'get',
-        success: function (data) {
-            categories = data.categories
-        }
-    })
 
-    return categories;
-}
 
-var categories = getCategories();
+
+
+//当前修改项
+var modify_fund_id;
+var modify_record;
 
 //数据表格部分
 var app2 = new Vue({
@@ -67,24 +39,43 @@ var app2 = new Vue({
         data: ""
     },
     methods: {
-        deleteRecord: function () {
-            var fund_id = $(event.target).parent().siblings("#fund_id").text()
-            $.ajax({
-                url: 'http://localhost:8080/fms/deleteRecord',
-                type: "post",
-                data: {
-                    fund_id: fund_id
-                },
-                success: function (data) {
-                    if (data.code == 1) {
-                        alert("删除成功");
-                        window.location.reload()
+        deleteRecord: function () {//删除记录record
+            var confirm = window.confirm("确定删除该条记录吗？");
+
+            if (confirm == true) {
+                var fund_id = $(event.target).parent().siblings("#fund_id").text()
+                $.ajax({
+                    url: 'http://localhost:8080/fms/deleteRecord',
+                    type: "post",
+                    data: {
+                        fund_id: fund_id
+                    },
+                    success: function (data) {
+                        if (data.code == 1) {
+                            alert("删除成功");
+                            window.location.reload()
+                        } else {
+                            alert("删除失败");
+                        }
                     }
-                }
-            })
+                })
+            }
+
+
         },
-        changeRecord: function () {
-            currentModify = $(event.target).parent().siblings("#fund_id").text()
+        changeRecord: function () {//暂存当前修改的记录的fund_id
+            modify_fund_id = $(event.target).parent().siblings("#fund_id").text()
+            for (i in userRecords) {
+                if (userRecords[i].fund_id == modify_fund_id) {
+                    modify_record = userRecords[i]
+                }
+            }
+            //把当前修改的record的各项值填入表单
+            modal2.fund_amount = modify_record.fund_amount
+            modal2.fund_date = modify_record.fund_date
+            modal2.fund_manager = modify_record.fund_manager
+            modal2.selected_category = modify_record.fund_category_id
+            modal2.selected_project = modify_record.fund_proj_id
         }
     },
     filters: {
@@ -99,14 +90,7 @@ var app2 = new Vue({
             }
         },
         timeFormat: function (value) {
-            var date = new Date(value);
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
-            var day = date.getDate();
-            var hour = date.getHours();
-            var minute = date.getMinutes();
-            var second = date.getSeconds();
-            return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
+            return new Date(value).toLocaleString();
         },
         toCategoryName: function (value) {
             for (i in categories) {
@@ -114,21 +98,30 @@ var app2 = new Vue({
                     return categories[i].category_name;
                 }
             }
+        },
+        toProjName: function (value) {
+            for (i in userProjects) {
+                if (userProjects[i].project_id == value) {
+                    return userProjects[i].project_name;
+                }
+            }
         }
     }
 })
-app2.data = getRecordsByProj(userProjects)
+app2.data = userRecords
 
 
-
+//添加记录modal
 var app3 = new Vue({
     el: "#app3",
     data: {
-        fund_username: user_name,
         fund_amount: "",
         fund_date: "",
-        selected: "",
-        data: categories
+        fund_manager: "",
+        selected_category: "",
+        selected_project: "",
+        categories: categories,
+        projects: userProjects
     },
     methods: {
         submitRecord: function (e) {
@@ -143,39 +136,54 @@ var app3 = new Vue({
                 alert("日期不能为空")
                 return false
             }
-            if (this.selected == "") {
+            if (this.fund_manager == "") {
+                alert("经办人不能为空")
+                return false
+            }
+            if (this.selected_category == "") {
                 alert("类别不能为空")
+                return false
+            }
+            if (this.selected_project == "") {
+                alert("项目不能为空")
                 return false
             }
             var url = "http://localhost:8080/fms/submitRecord"
             $.post(url, {
-                fund_username: this.fund_username,
                 fund_amount: Number.parseFloat(this.fund_amount),
                 fund_date: dd,
-                fund_category: this.selected
+                fund_category_id: this.selected_category,
+                fund_manager: this.fund_manager,
+                fund_proj_id: this.selected_project
             }, function (data) {
-                alert("提交成功")
-                window.location.reload()
+                if (data.code == 1) {
+                    alert("提交成功")
+                    window.location.reload()
+                } else {
+                    alert("提交失败")
+                }
             })
         }
     }
 })
 
+//修改记录modal
 var modal2 = new Vue({
     el: "#modal2",
     data: {
-        fund_username: user_name,
         fund_amount: "",
         fund_date: "",
-        selected: "",
-        data: categories
+        fund_manager: "",
+        selected_category: "",
+        selected_project: "",
+        categories: categories,
+        projects: userProjects
     },
     methods: {
         modifyRecord: function (e) {
             e.preventDefault()
             var d = new Date(this.fund_date)
             var dd = new Date(d.getTime() + 28800000)
-            console.log(dd)
             if (this.fund_amount == "") {
                 alert("金额不能为空")
                 return false
@@ -184,25 +192,39 @@ var modal2 = new Vue({
                 alert("日期不能为空")
                 return false
             }
-            if (this.selected == "") {
+            if (this.fund_manager == "") {
+                alert("经办人不能为空")
+                return false
+            }
+            if (this.selected_category == "") {
                 alert("类别不能为空")
+                return false
+            }
+            if (this.selected_project == "") {
+                alert("项目不能为空")
                 return false
             }
             var url = "http://localhost:8080/fms/modifyRecord"
             $.post(url, {
-                fund_id: Number.parseInt(currentModify),
+                fund_id: Number.parseInt(modify_fund_id),
                 fund_amount: Number.parseFloat(this.fund_amount),
                 fund_date: dd,
-                fund_category: this.selected
+                fund_category_id: this.selected_category,
+                fund_manager: this.fund_manager,
+                fund_proj_id: this.selected_project
             }, function (data) {
-                alert("修改成功")
-                window.location.reload()
+                if (data.code == 1) {
+                    alert("修改成功")
+                    window.location.reload()
+                } else {
+                    alert("修改失败")
+                }
             })
         }
     }
 })
 
-
+//切换类别
 var app4 = new Vue({
     el: "#app4",
     data: {

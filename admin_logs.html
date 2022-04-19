@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
   <meta name="generator" content="Hugo 0.88.1">
-  <title>管理员主页</title>
+  <title>日志查询——管理员</title>
 
   <link rel="canonical" href="">
 
@@ -64,12 +64,12 @@
                 总览
               </a>
             </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link" href="admin_user_man.html">
+            <li class="nav-item">
+              <a class="nav-link" href="admin_proj.html">
                 <span data-feather="file"></span>
-                用户管理
+                项目管理
               </a>
-            </li> -->
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="admin_cate.html">
                 <span data-feather="shopping-cart"></span>
@@ -89,7 +89,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">
+              <a class="nav-link active" aria-current="page" href="">
                 <span data-feather="layers"></span>
                 日志查询
               </a>
@@ -134,51 +134,9 @@
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <div
           class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">项目经费信息管理</h1>
+          <h1 class="h2">系统操作日志</h1>
           <div class="btn-toolbar mb-2 mb-md-0">
-            <!-- <div class="btn-group me-2">
-              <button type="button" class="btn btn-sm btn-outline-secondary">分享</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">导出</button>
-            </div> -->
-            <!-- <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-              添加
-            </button> -->
-            <!-- 模态框 -->
-            <div class="modal fade" id="myModal">
-              <div class="modal-dialog">
-                <div class="modal-content">
-
-                  <!-- 模态框头部 -->
-                  <div class="modal-header">
-                    <h4 class="modal-title">经费使用记录</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-                  <form id="app3" @submit="submitRecord">
-                    <!-- 模态框内容 -->
-                    <div class="modal-body">
-
-                      <div class="row">
-                        <div class="col">
-                          <input type="text" class="form-control" placeholder="费用" v-model="fund_amount">
-                        </div>
-                        <div class="col">
-                          <input type="datetime-local" class="form-control" placeholder="使用时间" v-model="fund_date">
-                        </div>
-                        <div class="col">
-                          <input type="text" class="form-control" placeholder="用途" v-model="fund_category">
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- 模态框底部 -->
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-outline-danger">提交</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
+            
           </div>
         </div>
 
@@ -198,7 +156,7 @@
             <tbody>
               <tr v-for="(item,key) in data" :key="key">
                 <td>{{item.log_no}}</td>
-                <td>{{item.log_user}}</td>
+                <td>{{item.log_user_id|toUserName}}</td>
                 <td>{{item.log_opt}}</td>
                 <td>{{item.log_date|timeFormat}}</td>
               </tr>
@@ -208,41 +166,7 @@
             </tbody>
           </table>
         </div>
-        <!-- 模态框 -->
-        <div class="modal fade" id="myModal2">
-          <div class="modal-dialog">
-            <div class="modal-content">
-
-              <!-- 模态框头部 -->
-              <div class="modal-header">
-                <h4 class="modal-title">修改记录</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <form @submit="modifyRecord">
-                <!-- 模态框内容 -->
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col">
-                      <input type="text" class="form-control" placeholder="费用" v-model="fund_amount">
-                    </div>
-                    <div class="col">
-                      <input type="datetime-local" class="form-control" placeholder="使用时间" v-model="fund_date">
-                    </div>
-                    <div class="col">
-                      <input type="text" class="form-control" placeholder="用途" v-model="fund_category">
-                    </div>
-                  </div>
-
-                </div>
-
-                <!-- 模态框底部 -->
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-outline-danger">提交</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+        
       </main>
     </div>
   </div>
@@ -260,183 +184,10 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  
+  <script src="js/public.js"></script>
   <script src="js/fmsadmin.js"></script>
-
-  <script>
-    var currentModify;
-
-    var admin_name = Cookies.get('admin_name');
-    new Vue({
-      el: "#app1",
-      data: {
-        uname: admin_name
-      },
-      methods: {
-        signout: function () {
-          Cookies.remove('admin_name');
-          window.location.href = "admin_index.html";
-        }
-      }
-    })
-
-    $.ajax({
-      url: 'http://localhost:8080/fms/getLogs',
-      type: "get",
-      success: function (data) {
-        displayRecords(data.logs)
-      }
-    })
-    function auditRecord(id, status) {
-        $.ajax({
-          url: 'http://localhost:8080/fms/auditRecord',
-          type: "post",
-          data: {
-            fund_audit: status,
-            fund_id: Number.parseInt(id)
-          },
-          success: function (data) {
-            if (data) {
-              alert("审核成功");
-              window.location.reload();
-            } else {
-              alert("审核失败");
-            }
-          }
-        })
-    }
-    function displayRecords(records) {
-
-      new Vue({
-        el: "#app2",
-        data: {
-          data: records
-        },
-        methods: {
-          passRecord: function(){
-            var fund_id = $(event.target).parent().siblings("#fund_id").text()
-            auditRecord(fund_id, 1)
-          },
-          rejectRecord: function(){
-            var fund_id = $(event.target).parent().siblings("#fund_id").text()
-            auditRecord(fund_id, 2)
-          },
-          deleteRecord: function () {
-            var fund_id = $(event.target).parent().siblings("#fund_id").text()
-            $.ajax({
-              url: 'http://localhost:8080/fms/deleteRecord',
-              type: "post",
-              data: {
-                fund_id: fund_id
-              },
-              success: function (data) {
-                alert("删除成功");
-                window.location.reload()
-              }
-            })
-          }
-        },
-        filters:{
-          toChinese:function(value){
-            switch(value){
-              case 0:
-                return "未审核";
-              case 1:
-                return "已通过";
-              case 2:
-                return "已拒绝";
-            }
-          },
-          timeFormat: function (value) {
-            var date = new Date(value);
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
-            var day = date.getDate();
-            var hour = date.getHours();
-            var minute = date.getMinutes();
-            var second = date.getSeconds();
-            return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
-          }
-        }
-      })
-    }
-
-    new Vue({
-      el: "#app3",
-      data: {
-        fund_username: user_name,
-        fund_amount: "",
-        fund_date: "",
-        fund_category: ""
-      },
-      methods: {
-        submitRecord: function (e) {
-          e.preventDefault()
-          if (this.fund_amount == "") {
-            alert("金额不能为空")
-            return false
-          }
-          if (this.fund_date == "") {
-            alert("日期不能为空")
-            return false
-          }
-          if (this.fund_category == "") {
-            alert("类别不能为空")
-            return false
-          }
-          var url = "http://localhost:8080/fms/submitRecord"
-          $.post(url, {
-            fund_username: this.fund_username,
-            fund_amount: Number.parseFloat(this.fund_amount),
-            fund_date: new Date(this.fund_date),
-            fund_category: this.fund_category
-          }, function (data) {
-            alert("提交成功")
-            window.location.reload()
-          })
-        }
-      }
-    })
-
-    new Vue({
-      el: "#myModal2",
-      data: {
-        fund_username: user_name,
-        fund_amount: "",
-        fund_date: "",
-        fund_category: ""
-      },
-      methods: {
-        modifyRecord: function (e) {
-          e.preventDefault()
-          if (this.fund_amount == "") {
-            alert("金额不能为空")
-            return false
-          }
-          if (this.fund_date == "") {
-            alert("日期不能为空")
-            return false
-          }
-          if (this.fund_category == "") {
-            alert("类别不能为空")
-            return false
-          }
-          var url = "http://localhost:8080/fms/modifyRecord"
-          $.post(url, {
-            fund_id: Number.parseInt(currentModify),
-            fund_amount: Number.parseFloat(this.fund_amount),
-            fund_date: new Date(this.fund_date),
-            fund_category: this.fund_category
-          }, function (data) {
-            alert("修改成功")
-            window.location.reload()
-          })
-        }
-      }
-    })
-
-
-  </script>
+  <script src="js/admin_logs.js"></script>
 </body>
 
 </html>

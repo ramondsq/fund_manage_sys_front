@@ -7,7 +7,7 @@
   <meta name="description" content="">
   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
   <meta name="generator" content="Hugo 0.88.1">
-  <title>主页——管理员</title>
+  <title>项目管理——管理员</title>
 
   <link rel="canonical" href="">
 
@@ -59,13 +59,13 @@
         <div class="position-sticky pt-3">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="">
+              <a class="nav-link" href="admin_home.html">
                 <span data-feather="home"></span>
                 总览
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="admin_proj.html">
+              <a class="nav-link active" aria-current="page" href="">
                 <span data-feather="file"></span>
                 项目管理
               </a>
@@ -134,18 +134,58 @@
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <div
           class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">项目经费信息管理</h1>
+          <h1 class="h2">项目信息</h1>
           <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="me-2" id="app4">
-              <select class="form-select" v-model="selected" @change="dispRecords">
-                <option :value="1">所有类别</option>
-                <option v-for="(item,key) in data" :key="key" :value="item.category_id">
-                  {{item.category_name}}
-                </option>
-              </select>
+            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal1">
+              添加
+            </button>
+            <!-- 模态框 -->
+            <div class="modal fade" id="modal1">
+              <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+
+                  <!-- 模态框头部 -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">新建项目</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <form id="app3" @submit="submitProject">
+                    <!-- 模态框内容 -->
+                    <div class="modal-body">
+
+                      <div class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="名称" v-model="project_name">
+                        </div>
+
+                        <div class="col">
+                          <select class="form-select" v-model="selected_user">
+                            <option v-for="(item,key) in users" :key="key" :value="item.user_id">
+                              {{item.user_name}}
+                            </option>
+                          </select>
+                        </div>
+
+                        <div class="col">
+                          <input type="text" class="form-control" placeholder="预算" v-model="project_budget">
+                        </div>
+
+                        <div class="col">
+                          <input type="datetime-local" class="form-control" placeholder="截止时间" v-model="project_deadline">
+                        </div>
+                        
+                      </div>
+
+                    </div>
+
+                    <!-- 模态框底部 -->
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-outline-danger">提交</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-
-
           </div>
         </div>
 
@@ -157,37 +197,31 @@
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">费用</th>
-                <th scope="col">使用时间</th>
-                <th scope="col">类别</th>
-                <th scope="col">经办人</th>
-                <th scope="col">审核</th>
-                <th scope="col">修改时间</th>
-                <th scope="col">项目</th>
+                <th scope="col">名称</th>
+                <th scope="col">状态</th>
+                <th scope="col">管理者</th>
+                <th scope="col">预算</th>
+                <th scope="col">余额</th>
+                <th scope="col">立项时间</th>
+                <th scope="col">截止时间</th>
                 <th scope="col">操作</th>
-                <th scope="col"> </th>
-                <th scope="col"> </th>
+                <th scope="col"></th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(item,key) in data" :key="key">
-                <td id="fund_id">{{item.fund_id}}</td>
-                <td id="fund_amount">{{item.fund_amount}} 元</td>
-                <td id="fund_date">{{item.fund_date|timeFormat}}</td>
-                <td id="fund_category_id">{{item.fund_category_id|toCategoryName}}</td>
-                <td id="fund_manager">{{item.fund_manager}}</td>
-                <td>{{item.fund_audit|toChinese}}</td>
-                <td>{{item.fund_change_date|timeFormat}}</td>
-                <td id="fund_proj_id">{{item.fund_proj_id|toProjName}}</td>
-                <td>
-                  <a href="" class="text-success" @click.prevent="passRecord">通过</a>
-                </td>
-                <td>
-                  <a href="" class="text-warning" @click.prevent="rejectRecord">拒绝</a>
-                </td>
-                <td>
-                  <a href="" class="text-danger" @click.prevent="deleteRecord">删除</a>
-                </td>
+                <td id="project_id">{{item.project_id}}</td>
+                <td>{{item.project_name}}</td>
+                <td>{{item.project_status|toChinese}}</td>
+                <td>{{item.project_user_id|toUserName}}</td>
+                <td>{{item.project_budget}}</td>
+                <td>{{item.project_balance}}</td>
+                <td>{{item.project_create|timeFormat}}</td>
+                <td>{{item.project_deadline|timeFormat}}</td>
+                <td><a href="" class="text-success" @click.prevent="enableProj">启用</a></td>
+                <td><a href="" class="text-warning" @click.prevent="disableProj">停用</a></td>
+                <td><a href="" class="text-danger" @click.prevent="delProj">删除</a></td>
               </tr>
 
 
@@ -195,41 +229,7 @@
             </tbody>
           </table>
         </div>
-        <!-- 模态框 -->
-        <div class="modal fade" id="myModal2">
-          <div class="modal-dialog">
-            <div class="modal-content">
 
-              <!-- 模态框头部 -->
-              <div class="modal-header">
-                <h4 class="modal-title">修改记录</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <form @submit="modifyRecord">
-                <!-- 模态框内容 -->
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col">
-                      <input type="text" class="form-control" placeholder="费用" v-model="fund_amount">
-                    </div>
-                    <div class="col">
-                      <input type="datetime-local" class="form-control" placeholder="使用时间" v-model="fund_date">
-                    </div>
-                    <div class="col">
-                      <input type="text" class="form-control" placeholder="用途" v-model="fund_category">
-                    </div>
-                  </div>
-
-                </div>
-
-                <!-- 模态框底部 -->
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-outline-danger">提交</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   </div>
@@ -250,7 +250,7 @@
 
   <script src="js/public.js"></script>
   <script src="js/fmsadmin.js"></script>
-  <script src="js/admin_home.js"></script>
+  <script src="js/admin_proj.js"></script>
 </body>
 
 </html>
