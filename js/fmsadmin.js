@@ -32,3 +32,22 @@ function getUserProjects() {
     return projs;
 }
 var projects = getUserProjects();
+
+//根据类别获取records
+function getRecordsBy(category) {
+    var records;
+
+    $.ajax({
+        async: false,
+        url: 'http://localhost:8080/fms/getRecordsBy',
+        type: "get",
+        data: {
+            fund_category_id: category
+        },
+        success: function (data) {
+            records = data.records
+        }
+    })
+
+    return records;
+}

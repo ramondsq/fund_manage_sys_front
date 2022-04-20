@@ -28,10 +28,6 @@ var userRecords = getRecordsByProj(userProjects);
 
 
 
-//当前修改项
-var modify_fund_id;
-var modify_record;
-
 //数据表格部分
 var app2 = new Vue({
     el: "#app2",
@@ -39,11 +35,21 @@ var app2 = new Vue({
         data: ""
     },
     methods: {
-        deleteRecord: function () {//删除记录record
-            var confirm = window.confirm("确定删除该条记录吗？");
+        deleteRecord: function (e) {//删除记录record
+            e.preventDefault()
+            var fund_id = $(event.target).parent().siblings("#fund_id").text()
 
+            for (i in userRecords) {
+                if (userRecords[i].fund_id == fund_id) {
+                    if (userRecords[i].fund_audit != 1) {
+                        alert("该记录已经审核，不能删除");
+                        return;
+                    }
+                }
+            }
+
+            var confirm = window.confirm("确定删除该条记录吗？");
             if (confirm == true) {
-                var fund_id = $(event.target).parent().siblings("#fund_id").text()
                 $.ajax({
                     url: 'http://localhost:8080/fms/deleteRecord',
                     type: "post",
@@ -63,19 +69,27 @@ var app2 = new Vue({
 
 
         },
-        changeRecord: function () {//暂存当前修改的记录的fund_id
-            modify_fund_id = $(event.target).parent().siblings("#fund_id").text()
+        changeRecord: function (e) {//暂存当前修改的记录的fund_id
+            e.preventDefault()
+            var modify_fund_id = $(e.target).parent().siblings("#fund_id").text()
+            var modify_record
             for (i in userRecords) {
                 if (userRecords[i].fund_id == modify_fund_id) {
                     modify_record = userRecords[i]
                 }
             }
+            if (modify_record.fund_audit != 1) {
+                alert("该记录已经审核，不能修改");
+                return;
+            }
             //把当前修改的record的各项值填入表单
+            modal2.fund_id = modify_record.fund_id
             modal2.fund_amount = modify_record.fund_amount
             modal2.fund_date = modify_record.fund_date
             modal2.fund_manager = modify_record.fund_manager
             modal2.selected_category = modify_record.fund_category_id
             modal2.selected_project = modify_record.fund_proj_id
+            $("#modal2").modal("show")
         }
     },
     filters: {
@@ -171,13 +185,15 @@ var app3 = new Vue({
 var modal2 = new Vue({
     el: "#modal2",
     data: {
+        fund_id: "",
         fund_amount: "",
         fund_date: "",
         fund_manager: "",
         selected_category: "",
         selected_project: "",
         categories: categories,
-        projects: userProjects
+        projects: userProjects,
+        fund_audit: ""
     },
     methods: {
         modifyRecord: function (e) {
@@ -206,7 +222,7 @@ var modal2 = new Vue({
             }
             var url = "http://localhost:8080/fms/modifyRecord"
             $.post(url, {
-                fund_id: Number.parseInt(modify_fund_id),
+                fund_id: Number.parseInt(this.fund_id),
                 fund_amount: Number.parseFloat(this.fund_amount),
                 fund_date: dd,
                 fund_category_id: this.selected_category,

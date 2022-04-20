@@ -234,11 +234,11 @@
                 <td id="fund_date">{{item.fund_date|timeFormat}}</td>
                 <td id="fund_category_id">{{item.fund_category_id|toCategoryName}}</td>
                 <td id="fund_manager">{{item.fund_manager}}</td>
-                <td>{{item.fund_audit|toChinese}}</td>
+                <td id="fund_audit">{{item.fund_audit|toChinese}}</td>
                 <td>{{item.fund_change_date|timeFormat}}</td>
                 <td id="fund_proj_id">{{item.fund_proj_id|toProjName}}</td>
                 <td>
-                  <a href="" class="text-primary" data-bs-toggle="modal" data-bs-target="#modal2"
+                  <a href="" class="text-primary" 
                     @click="changeRecord">修改</a>
                 </td>
                 <td><a href="" class="text-danger" @click.prevent="deleteRecord">删除</a></td>
