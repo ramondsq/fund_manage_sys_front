@@ -33,7 +33,7 @@ function auditRecord(id, status) {
                 alert("审核成功");
                 window.location.reload();
             } else {
-                alert("审核失败");
+                alert("审核失败, 原因：" + data.msg);
             }
         }
     })
@@ -55,22 +55,25 @@ var app2 = new Vue({
             auditRecord(fund_id, 3)
         },
         deleteRecord: function () {//删除记录
-            var fund_id = $(event.target).parent().siblings("#fund_id").text()
-            $.ajax({
-                url: 'http://localhost:8080/fms/deleteRecord',
-                type: "post",
-                data: {
-                    fund_id: fund_id
-                },
-                success: function (data) {
-                    if (data.code == 1) {
-                        alert("删除成功");
-                        window.location.reload()
-                    } else {
-                        alert("删除失败");
+            var confirm = window.confirm("确定删除该条记录吗？");
+            if (confirm == true) {
+                var fund_id = $(event.target).parent().siblings("#fund_id").text()
+                $.ajax({
+                    url: 'http://localhost:8080/fms/deleteRecord',
+                    type: "post",
+                    data: {
+                        fund_id: fund_id
+                    },
+                    success: function (data) {
+                        if (data.code == 1) {
+                            alert("删除成功");
+                            window.location.reload()
+                        } else {
+                            alert("删除失败");
+                        }
                     }
-                }
-            })
+                })
+            }
         }
     },
     filters: {

@@ -37,7 +37,7 @@ var app2 = new Vue({
     methods: {
         deleteRecord: function (e) {//删除记录record
             e.preventDefault()
-            var fund_id = $(event.target).parent().siblings("#fund_id").text()
+            var fund_id = $(e.target).parent().siblings("#fund_id").text()
 
             for (i in userRecords) {
                 if (userRecords[i].fund_id == fund_id) {
@@ -164,7 +164,7 @@ var app3 = new Vue({
             }
             var url = "http://localhost:8080/fms/submitRecord"
             $.post(url, {
-                fund_amount: Number.parseFloat(this.fund_amount),
+                fund_amount: -Number.parseFloat(this.fund_amount),
                 fund_date: dd,
                 fund_category_id: this.selected_category,
                 fund_manager: this.fund_manager,
