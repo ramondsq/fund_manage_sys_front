@@ -6,6 +6,9 @@ function getRecordsPerCate(fund_proj_id) {
         async: false,
         url: url,
         type: "GET",
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         data: {
             fund_proj_id: fund_proj_id
         },

@@ -24,6 +24,9 @@ function auditRecord(id, status) {
     $.ajax({
         url: 'http://localhost:8080/fms/auditRecord',
         type: "post",
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         data: {
             fund_audit: status,
             fund_id: Number.parseInt(id)
@@ -61,6 +64,9 @@ var app2 = new Vue({
                 $.ajax({
                     url: 'http://localhost:8080/fms/deleteRecord',
                     type: "post",
+                    headers: {
+                        'token': Cookies.get('user_token')
+                    },
                     data: {
                         fund_id: fund_id
                     },
@@ -134,14 +140,25 @@ new Vue({
                 return false
             }
             var url = "http://localhost:8080/fms/modifyRecord"
-            $.post(url, {
-                fund_id: Number.parseInt(currentModify),
-                fund_amount: Number.parseFloat(this.fund_amount),
-                fund_date: new Date(this.fund_date),
-                fund_category: this.fund_category
-            }, function (data) {
-                alert("修改成功")
-                window.location.reload()
+            $.ajax({
+                async: false,
+                url: url,
+                type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
+                data: {
+                    fund_id: Number.parseInt(currentModify),
+                    fund_amount: Number.parseFloat(this.fund_amount),
+                    fund_date: new Date(this.fund_date),
+                    fund_category: this.fund_category
+                },
+                success: function (data) {
+                    if (data.code == 1) {
+                        alert("修改成功")
+                        window.location.reload()
+                    }
+                }
             })
         }
     }

@@ -4,6 +4,9 @@ function changeProjStatus(proj_id, status) {
         async: false,
         url: "http://localhost:8080/fms/updateProjById",
         type: "POST",
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         data: {
             project_id: Number.parseInt(proj_id),
             project_status: status
@@ -26,19 +29,22 @@ var app2 = new Vue({
         data: ""
     },
     methods: {
-        enableProj: function () {
+        enableProj: function (event) {
             var proj_id = $(event.target).parent().siblings("#project_id").text();
             changeProjStatus(proj_id, 1);
         },
-        disableProj: function () {
+        disableProj: function (event) {
             var proj_id = $(event.target).parent().siblings("#project_id").text();
             changeProjStatus(proj_id, 2);
         },
-        delProj: function () {
+        delProj: function (event) {
             var proj_id = $(event.target).parent().siblings("#project_id").text();
             $.ajax({
                 url: "http://localhost:8080/fms/delProj",
                 type: "POST",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
                 data: {
                     project_id: Number.parseInt(proj_id)
                 },
@@ -109,16 +115,21 @@ var app3 = new Vue({
                 alert("请输入截止时间");
                 return;
             }
-
-            var url = "http://localhost:8080/fms/submitProject";
-            $.post(url,
-                {
+            
+            $.ajax({
+                url: "http://localhost:8080/fms/submitProject",
+                async: false,
+                type: "POST",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
+                data: {
                     project_name: this.project_name,
                     project_user_id: this.selected_user,
                     project_budget: Number.parseFloat(this.project_budget),
                     project_deadline: dd,
                 },
-                function (data) {
+                success: function (data) {
                     if (data.code == 1) {
                         alert("提交成功");
                         window.location.reload();
@@ -126,7 +137,7 @@ var app3 = new Vue({
                         alert("提交失败");
                     }
                 }
-            )
+            })
         }
     }
 })

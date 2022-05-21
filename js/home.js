@@ -5,6 +5,9 @@ function getRecordsByProj(projects, category) {
     for (i in projects) {
         $.ajax({
             async: false,
+            headers: {
+                'token': Cookies.get('user_token')
+            },
             url: 'http://localhost:8080/fms/getRecordsBy',
             type: "get",
             data: {
@@ -21,6 +24,7 @@ function getRecordsByProj(projects, category) {
 
     return allrecords;
 }
+var userProjects = getUserProjects(user_id);
 var userRecords = getRecordsByProj(userProjects);
 
 
@@ -52,7 +56,11 @@ var app2 = new Vue({
             if (confirm == true) {
                 $.ajax({
                     url: 'http://localhost:8080/fms/deleteRecord',
+                    async: false,
                     type: "post",
+                    headers: {
+                        'token': Cookies.get('user_token')
+                    },
                     data: {
                         fund_id: fund_id
                     },
@@ -162,19 +170,28 @@ var app3 = new Vue({
                 alert("项目不能为空")
                 return false
             }
-            var url = "http://localhost:8080/fms/submitRecord"
-            $.post(url, {
-                fund_amount: -Number.parseFloat(this.fund_amount),
-                fund_date: dd,
-                fund_category_id: this.selected_category,
-                fund_manager: this.fund_manager,
-                fund_proj_id: this.selected_project
-            }, function (data) {
-                if (data.code == 1) {
-                    alert("提交成功")
-                    window.location.reload()
-                } else {
-                    alert("提交失败")
+
+            $.ajax({
+                async: false,
+                url: "http://localhost:8080/fms/submitRecord",
+                type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
+                data: {
+                    fund_amount: -Number.parseFloat(this.fund_amount),
+                    fund_date: dd,
+                    fund_category_id: this.selected_category,
+                    fund_manager: this.fund_manager,
+                    fund_proj_id: this.selected_project
+                },
+                success: function (data) {
+                    if (data.code == 1) {
+                        alert("提交成功")
+                        window.location.reload()
+                    } else {
+                        alert("提交失败")
+                    }
                 }
             })
         }
@@ -220,20 +237,29 @@ var modal2 = new Vue({
                 alert("项目不能为空")
                 return false
             }
-            var url = "http://localhost:8080/fms/modifyRecord"
-            $.post(url, {
-                fund_id: Number.parseInt(this.fund_id),
-                fund_amount: Number.parseFloat(this.fund_amount),
-                fund_date: dd,
-                fund_category_id: this.selected_category,
-                fund_manager: this.fund_manager,
-                fund_proj_id: this.selected_project
-            }, function (data) {
-                if (data.code == 1) {
-                    alert("修改成功")
-                    window.location.reload()
-                } else {
-                    alert("修改失败")
+
+            $.ajax({
+                async: false,
+                url: "http://localhost:8080/fms/modifyRecord",
+                type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
+                data: {
+                    fund_id: Number.parseInt(this.fund_id),
+                    fund_amount: Number.parseFloat(this.fund_amount),
+                    fund_date: dd,
+                    fund_category_id: this.selected_category,
+                    fund_manager: this.fund_manager,
+                    fund_proj_id: this.selected_project
+                },
+                success: function (data) {
+                    if (data.code == 1) {
+                        alert("修改成功")
+                        window.location.reload()
+                    } else {
+                        alert("修改失败")
+                    }
                 }
             })
         }

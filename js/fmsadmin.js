@@ -1,5 +1,5 @@
 //登录验证
-if(!Cookies.get('admin_name')){
+if(!Cookies.get('user_token')){
     window.location.href = 'admin_index.html';
 }
 var admin_name = Cookies.get('admin_name');
@@ -12,6 +12,7 @@ new Vue({
     methods: {
         signout: function () {
             Cookies.remove('admin_name');
+            Cookies.remove('user_token');
             window.location.href = "admin_index.html";
         }
     }
@@ -25,6 +26,9 @@ function getUserProjects() {
         async: false,
         url: 'http://localhost:8080/fms/getProjectsBy',
         type: "get",
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         success: function (data) {
             projs = data.projects
         }
@@ -41,6 +45,9 @@ function getRecordsBy(category) {
         async: false,
         url: 'http://localhost:8080/fms/getRecordsBy',
         type: "get",
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         data: {
             fund_category_id: category
         },

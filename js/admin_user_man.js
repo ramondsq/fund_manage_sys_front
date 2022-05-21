@@ -17,6 +17,9 @@ var app2 = new Vue({
             $.ajax({
                 url: 'http://localhost:8080/fms/deleteUser',
                 type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
                 data: {
                     user_name: user_name
                 },
@@ -47,6 +50,9 @@ var app3 = new Vue({
             $.ajax({
                 url: 'http://localhost:8080/fms/addUser',
                 type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
                 data: {
                     user_name: this.user_name,
                     user_pwd: this.user_pwd
@@ -73,17 +79,25 @@ var myModal2 = new Vue({
     methods: {
         changeUserPwd: function (e) {
             e.preventDefault();
-            var url = "http://localhost:8080/fms/changeUserPwd"
-            $.post(url, {
-                user_name: changePwdUname,
-                old_pwd: oldPwd,
-                new_pwd: this.new_pwd
-            }, function (data) {
-                if (data.code == 1) {
-                    alert("修改成功")
-                    window.location.reload()
-                } else {
-                    alert("修改失败")
+            
+            $.ajax({
+                url: 'http://localhost:8080/fms/changeUserPwd',
+                type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
+                data: {
+                    user_name: changePwdUname,
+                    old_pwd: oldPwd,
+                    new_pwd: this.new_pwd
+                },
+                success: function (data) {
+                    if (data.code == 1) {
+                        alert("修改成功")
+                        window.location.reload()
+                    } else {
+                        alert("修改失败")
+                    }
                 }
             })
         }

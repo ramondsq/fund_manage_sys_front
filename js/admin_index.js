@@ -27,6 +27,7 @@ new Vue({
                 success: function (data) {
                     if (data.code == 1) {
                         Cookies.set('admin_name', cuname)
+                        Cookies.set('user_token', data.token)
                         alert("登录成功")
 
                         window.location.href = "admin_home.html"

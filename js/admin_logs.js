@@ -5,6 +5,9 @@ function getLogs() {
         async: false,
         url: 'http://localhost:8080/fms/getLogsBy',
         type: "get",
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         success: function (data) {
             logs = data.logs
         }

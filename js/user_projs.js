@@ -29,4 +29,5 @@ var app2 = new Vue({
         }
     }
 })
+var userProjects = getUserProjects(user_id);
 app2.data = userProjects

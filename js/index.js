@@ -31,6 +31,7 @@ new Vue({
           if (data.code == 1) {
             Cookies.set('user_name', username)
             Cookies.set('user_id', data.user_id)
+            Cookies.set('user_token', data.token)
             alert("登录成功")
             window.location.href = "home.html"
           } else {

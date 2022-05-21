@@ -1,5 +1,5 @@
 //cookie校验，登陆检测
-if(!Cookies.get('user_name')){
+if(!Cookies.get('user_token')){
     window.location.href = 'index.html';
 }
 
@@ -16,11 +16,10 @@ new Vue({
         signout: function () {
             Cookies.remove('user_name');
             Cookies.remove('user_id');
+            Cookies.remove('user_token');
             window.location.href = "index.html";
         }
     }
 })
 
-//获取用户的projs
-var userProjects = getUserProjects(user_id);
 

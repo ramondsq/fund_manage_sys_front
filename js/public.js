@@ -6,6 +6,9 @@ function getCategories() {
         async: false,
         url: 'http://localhost:8080/fms/getCategoriesBy',
         type: 'get',
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         success: function (data) {
             categories = data.categories
         }
@@ -24,6 +27,9 @@ function getUserProjects(user_id) {
         async: false,
         url: 'http://localhost:8080/fms/getProjectsBy',
         type: "get",
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         data: {
             project_user_id: user_id
         },
@@ -34,12 +40,16 @@ function getUserProjects(user_id) {
     return projs;
 }
 
+
 //获取users
 function getUsers() {
     var users;
 
     $.ajax({
         async: false,
+        headers: {
+            'token': Cookies.get('user_token')
+        },
         url: 'http://localhost:8080/fms/getUsers',
         type: "get",
         success: function (data) {

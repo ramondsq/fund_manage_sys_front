@@ -5,12 +5,15 @@ var app2 = new Vue({
         data: categories
     },
     methods: {
-        delCate: function () {
+        delCate: function (event) {
             var name = $(event.target).parent().siblings("#catename").text()
             $.ajax({
                 async: false,
                 url: 'http://localhost:8080/fms/removeCategory',
                 type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
                 data: {
                     category_name: name
                 },
@@ -24,7 +27,7 @@ var app2 = new Vue({
                 }
             })
         },
-        storeCate: function(){
+        storeCate: function(event){
             modal2.category_id = $(event.target).parent().siblings("#cate_id").text()
             modal2.category_name = $(event.target).parent().siblings("#catename").text()
         }
@@ -49,6 +52,9 @@ var app3 = new Vue({
                 async: false,
                 url: 'http://localhost:8080/fms/submitCategory',
                 type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
                 data: {
                     category_name: this.category_name
                 },
@@ -84,6 +90,9 @@ var modal2 = new Vue({
                 async: false,
                 url: 'http://localhost:8080/fms/modifyCategory',
                 type: "post",
+                headers: {
+                    'token': Cookies.get('user_token')
+                },
                 data: {
                     category_id: this.category_id,
                     category_name: this.category_name
