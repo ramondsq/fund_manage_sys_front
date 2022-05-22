@@ -180,10 +180,14 @@
                 <td>{{item.fund_change_date|timeFormat}}</td>
                 <td id="fund_proj_id">{{item.fund_proj_id|toProjName}}</td>
                 <td>
-                  <a href="" class="text-success" @click.prevent="passRecord">通过</a>
+                  <a href="" class="text-success" @click.prevent="passRecord">
+                    {{item.fund_audit|passAudit}}
+                  </a>
                 </td>
                 <td>
-                  <a href="" class="text-warning" @click.prevent="rejectRecord">拒绝</a>
+                  <a href="" class="text-warning" @click.prevent="rejectRecord">
+                    {{item.fund_audit|rejectAudit}}
+                  </a>
                 </td>
                 <td>
                   <a href="" class="text-danger" @click.prevent="deleteRecord">删除</a>
@@ -195,41 +199,7 @@
             </tbody>
           </table>
         </div>
-        <!-- 模态框 -->
-        <div class="modal fade" id="myModal2">
-          <div class="modal-dialog">
-            <div class="modal-content">
-
-              <!-- 模态框头部 -->
-              <div class="modal-header">
-                <h4 class="modal-title">修改记录</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <form @submit="modifyRecord">
-                <!-- 模态框内容 -->
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col">
-                      <input type="text" class="form-control" placeholder="费用" v-model="fund_amount">
-                    </div>
-                    <div class="col">
-                      <input type="datetime-local" class="form-control" placeholder="使用时间" v-model="fund_date">
-                    </div>
-                    <div class="col">
-                      <input type="text" class="form-control" placeholder="用途" v-model="fund_category">
-                    </div>
-                  </div>
-
-                </div>
-
-                <!-- 模态框底部 -->
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-outline-danger">提交</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+        
       </main>
     </div>
   </div>

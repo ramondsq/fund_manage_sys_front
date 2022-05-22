@@ -79,6 +79,22 @@ var app2 = new Vue({
                     return users[i].user_name;
                 }
             }
+        },
+        activateProj: function (value) {
+            switch (value) {
+                case 1:
+                    return "";
+                case 2:
+                    return "启用";
+            }
+        },
+        deactivateProj: function (value) {
+            switch (value) {
+                case 1:
+                    return "停用";
+                case 2:
+                    return "";
+            }
         }
     }
 })

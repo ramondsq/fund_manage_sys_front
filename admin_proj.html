@@ -141,7 +141,7 @@
             </button>
             <!-- 模态框 -->
             <div class="modal fade" id="modal1">
-              <div class="modal-dialog modal-xl">
+              <div class="modal-dialog">
                 <div class="modal-content">
 
                   <!-- 模态框头部 -->
@@ -153,28 +153,33 @@
                     <!-- 模态框内容 -->
                     <div class="modal-body">
 
-                      <div class="row">
-                        <div class="col">
-                          <input type="text" class="form-control" placeholder="名称" v-model="project_name">
-                        </div>
 
-                        <div class="col">
-                          <select class="form-select" v-model="selected_user">
-                            <option v-for="(item,key) in users" :key="key" :value="item.user_id">
-                              {{item.user_name}}
-                            </option>
-                          </select>
-                        </div>
-
-                        <div class="col">
-                          <input type="text" class="form-control" placeholder="预算" v-model="project_budget">
-                        </div>
-
-                        <div class="col">
-                          <input type="datetime-local" class="form-control" placeholder="截止时间" v-model="project_deadline">
-                        </div>
-                        
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">名称</span>
+                        <input type="text" class="form-control" v-model="project_name">
                       </div>
+
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">用户</span>
+                        <select class="form-select" v-model="selected_user">
+                          <option v-for="(item,key) in users" :key="key" :value="item.user_id">
+                            {{item.user_name}}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">预算</span>
+                        <input type="text" class="form-control" v-model="project_budget">
+                        <span class="input-group-text">元</span>
+                      </div>
+
+                      <div class="input-group mb-3">
+                        <span class="input-group-text">截止时间</span>
+                        <input type="datetime-local" class="form-control" v-model="project_deadline">
+                      </div>
+
+
 
                     </div>
 
@@ -219,8 +224,16 @@
                 <td>{{item.project_balance}}</td>
                 <td>{{item.project_create|timeFormat}}</td>
                 <td>{{item.project_deadline|timeFormat}}</td>
-                <td><a href="" class="text-success" @click.prevent="enableProj">启用</a></td>
-                <td><a href="" class="text-warning" @click.prevent="disableProj">停用</a></td>
+                <td>
+                  <a href="" class="text-success" @click.prevent="enableProj">
+                    {{item.project_status|activateProj}}
+                  </a>
+                </td>
+                <td>
+                  <a href="" class="text-warning" @click.prevent="disableProj">
+                    {{item.project_status|deactivateProj}}
+                  </a>
+                </td>
                 <td><a href="" class="text-danger" @click.prevent="delProj">删除</a></td>
               </tr>
 

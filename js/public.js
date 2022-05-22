@@ -31,7 +31,8 @@ function getUserProjects(user_id) {
             'token': Cookies.get('user_token')
         },
         data: {
-            project_user_id: user_id
+            project_user_id: user_id,
+            project_status: 1
         },
         success: function (data) {
             projs = data.projects

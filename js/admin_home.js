@@ -109,6 +109,26 @@ var app2 = new Vue({
                     return projects[i].project_name;
                 }
             }
+        },
+        passAudit: function (value) {
+            switch (value) {
+                case 1:
+                    return "通过";
+                case 2:
+                    return "";
+                case 3:
+                    return "通过";
+            }
+        },
+        rejectAudit: function (value) {
+            switch (value) {
+                case 1:
+                    return "拒绝";
+                case 2:
+                    return "拒绝";
+                case 3:
+                    return "";
+            }
         }
     }
 })

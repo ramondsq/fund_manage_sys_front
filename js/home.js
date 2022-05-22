@@ -127,6 +127,26 @@ var app2 = new Vue({
                     return userProjects[i].project_name;
                 }
             }
+        },
+        modifyLink: function(value) {
+            switch (value) {
+                case 1:
+                    return "修改";
+                case 2:
+                    return "";
+                case 3:
+                    return "";
+            }
+        },
+        delLink: function(value) {
+            switch (value) {
+                case 1:
+                    return "删除";
+                case 2:
+                    return "";
+                case 3:
+                    return "";
+            }
         }
     }
 })
